@@ -76,7 +76,7 @@ const appendFileAsync = async () => {
   );
 };
 
-// it is better to have path and data as a parameters
+// // it is better to have path and data as a parameters
 const writeFileAsync = async (path, data) => {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, data, (err) => {
@@ -110,7 +110,7 @@ const readFileAsync = async (path) => {
   });
 };
 
-// then we can use async/await or then/catch
+// // then we can use async/await or then/catch
 writeFileAsync(path.resolve(__dirname, 'text.txt'), 'data')
   .then(() => appendFileAsync(path.resolve(__dirname, 'text.txt'), ' 123'))
   .then(() => appendFileAsync(path.resolve(__dirname, 'text.txt'), ' 555'))
@@ -119,7 +119,7 @@ writeFileAsync(path.resolve(__dirname, 'text.txt'), 'data')
   .then((data) => console.log(data))
   .catch((err) => console.log(err));
 
-// romoving a file
+// // romoving a file
 const removeFileAsync = async (path) => {
   return new Promise((resolve, reject) => {
     fs.rm(path, (err) => {
@@ -133,3 +133,15 @@ const removeFileAsync = async (path) => {
 removeFileAsync(path.resolve(__dirname, 'text.txt')).then(() =>
   console.log('File removed')
 );
+
+const text = process.env.TEXT || '';
+
+writeFileAsync(path.resolve(__dirname, 'text.txt'), text)
+  .then(() => readFileAsync(path.resolve(__dirname, 'text.txt')))
+  .then((data) => data.split(' ').length)
+  .then((count) =>
+    writeFileAsync(
+      path.resolve(__dirname, 'count.txt'),
+      `Number of words ${count}`
+    ).then(() => removeFileAsync(path.resolve(__dirname, 'text.txt')))
+  );
